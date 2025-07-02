@@ -25,7 +25,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ScenarioDetailModal } from "./scenario-detail-modal"
 
 interface Scenario {
   id: number
@@ -209,176 +208,158 @@ export function ScenariosGrid() {
   }
 
   return (
-    <>
-      <div className="grid gap-6 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-        {mockScenarios.map((scenario) => (
-          <Card
-            key={scenario.id}
-            className="card-interactive card-border-accent group"
-            onClick={() => setSelectedScenario(scenario)}
-          >
-            <CardHeader className="pb-4">
-              <div className="flex items-start justify-between">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl">
-                      <BarChart3 className="h-5 w-5 text-white" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-heading-4 truncate">{scenario.name}</h3>
-                      <p className="text-caption line-clamp-2">{scenario.description}</p>
-                    </div>
-                  </div>
+    <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+      {mockScenarios.map((scenario) => (
+        <Card
+          key={scenario.id}
+          className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary"
+          onClick={() => setSelectedScenario(scenario)}
+        >
+          <CardHeader className="pb-3">
+            <div className="flex items-start justify-between">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <BarChart3 className="h-5 w-5 text-primary" />
+                  <h3 className="font-semibold text-sm sm:text-base truncate">{scenario.name}</h3>
                 </div>
-                <div className="flex items-center gap-2 ml-3">
-                  {getImpactIcon(scenario.impact)}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
-                        <Star className="h-4 w-4 mr-2" />
-                        Favoritar
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>Duplicar</DropdownMenuItem>
-                      <DropdownMenuItem>Editar</DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-red-600">Arquivar</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{scenario.description}</p>
+              </div>
+              <div className="flex items-center gap-2 ml-2">
+                {getImpactIcon(scenario.impact)}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem>
+                      <Star className="h-4 w-4 mr-2" />
+                      Favoritar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>Duplicar</DropdownMenuItem>
+                    <DropdownMenuItem>Editar</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-red-600">Arquivar</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent className="space-y-4">
+            {/* Type and Status */}
+            <div className="flex items-center justify-between">
+              <Badge className={`text-xs ${getTypeColor(scenario.type)}`}>{getTypeLabel(scenario.type)}</Badge>
+              <Badge className={`text-xs ${getStatusColor(scenario.status)}`}>
+                {scenario.status === "active"
+                  ? "Ativo"
+                  : scenario.status === "draft"
+                    ? "Rascunho"
+                    : scenario.status === "archived"
+                      ? "Arquivado"
+                      : "Concluído"}
+              </Badge>
+            </div>
+
+            {/* Company */}
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Building2 className="h-4 w-4" />
+              <span className="truncate">{scenario.company}</span>
+            </div>
+
+            {/* Key Metrics */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <div className="flex items-center gap-1">
+                  <DollarSign className="h-3 w-3 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground">Receita</span>
+                </div>
+                <p className="text-sm font-semibold">{formatCurrency(scenario.metrics.revenue)}</p>
+                <div className="flex items-center gap-1">
+                  {scenario.metrics.revenueChange > 0 ? (
+                    <TrendingUp className="h-3 w-3 text-green-500" />
+                  ) : (
+                    <TrendingDown className="h-3 w-3 text-red-500" />
+                  )}
+                  <span className={`text-xs ${scenario.metrics.revenueChange > 0 ? "text-green-600" : "text-red-600"}`}>
+                    {scenario.metrics.revenueChange > 0 ? "+" : ""}
+                    {scenario.metrics.revenueChange}%
+                  </span>
                 </div>
               </div>
-            </CardHeader>
 
-            <CardContent className="space-items">
-              {/* Type and Status */}
-              <div className="flex items-center justify-between">
-                <Badge className={`text-xs ${getTypeColor(scenario.type)}`}>{getTypeLabel(scenario.type)}</Badge>
-                <Badge className={`text-xs ${getStatusColor(scenario.status)}`}>
-                  {scenario.status === "active"
-                    ? "Ativo"
-                    : scenario.status === "draft"
-                      ? "Rascunho"
-                      : scenario.status === "archived"
-                        ? "Arquivado"
-                        : "Concluído"}
+              <div className="space-y-1">
+                <div className="flex items-center gap-1">
+                  <Target className="h-3 w-3 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground">Lucro</span>
+                </div>
+                <p className="text-sm font-semibold">{formatCurrency(scenario.metrics.profit)}</p>
+                <div className="flex items-center gap-1">
+                  {scenario.metrics.profitChange > 0 ? (
+                    <TrendingUp className="h-3 w-3 text-green-500" />
+                  ) : (
+                    <TrendingDown className="h-3 w-3 text-red-500" />
+                  )}
+                  <span className={`text-xs ${scenario.metrics.profitChange > 0 ? "text-green-600" : "text-red-600"}`}>
+                    {scenario.metrics.profitChange > 0 ? "+" : ""}
+                    {scenario.metrics.profitChange}%
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Confidence and Probability */}
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Confiança</span>
+                  <span className="text-sm text-muted-foreground">{scenario.confidence}%</span>
+                </div>
+                <Progress value={scenario.confidence} className="h-2" />
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Probabilidade</span>
+                  <span className="text-sm text-muted-foreground">{scenario.probability}%</span>
+                </div>
+                <Progress value={scenario.probability} className="h-2" />
+              </div>
+            </div>
+
+            {/* Author and Date */}
+            <div className="grid grid-cols-2 gap-4 pt-2 border-t text-xs text-muted-foreground">
+              <div>
+                <p>Autor: {scenario.author}</p>
+              </div>
+              <div>
+                <p>
+                  Atualizado:{" "}
+                  {new Date(scenario.lastUpdate).toLocaleDateString("pt-BR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                  })}
+                </p>
+              </div>
+            </div>
+
+            {/* Tags */}
+            <div className="flex flex-wrap gap-1">
+              {scenario.tags.slice(0, 3).map((tag) => (
+                <Badge key={tag} variant="secondary" className="text-xs px-2 py-0.5">
+                  {tag}
                 </Badge>
-              </div>
-
-              {/* Company */}
-              <div className="flex items-center gap-2 text-body-small text-muted-foreground">
-                <Building2 className="h-4 w-4" />
-                <span className="truncate">{scenario.company}</span>
-              </div>
-
-              {/* Key Metrics */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-compact">
-                  <div className="flex items-center gap-1">
-                    <DollarSign className="h-3 w-3 text-muted-foreground" />
-                    <span className="text-caption">Receita</span>
-                  </div>
-                  <p className="text-body font-semibold">{formatCurrency(scenario.metrics.revenue)}</p>
-                  <div className="flex items-center gap-1">
-                    {scenario.metrics.revenueChange > 0 ? (
-                      <TrendingUp className="h-3 w-3 text-green-500" />
-                    ) : (
-                      <TrendingDown className="h-3 w-3 text-red-500" />
-                    )}
-                    <span
-                      className={`text-xs ${scenario.metrics.revenueChange > 0 ? "text-green-600" : "text-red-600"}`}
-                    >
-                      {scenario.metrics.revenueChange > 0 ? "+" : ""}
-                      {scenario.metrics.revenueChange}%
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-compact">
-                  <div className="flex items-center gap-1">
-                    <Target className="h-3 w-3 text-muted-foreground" />
-                    <span className="text-caption">Lucro</span>
-                  </div>
-                  <p className="text-body font-semibold">{formatCurrency(scenario.metrics.profit)}</p>
-                  <div className="flex items-center gap-1">
-                    {scenario.metrics.profitChange > 0 ? (
-                      <TrendingUp className="h-3 w-3 text-green-500" />
-                    ) : (
-                      <TrendingDown className="h-3 w-3 text-red-500" />
-                    )}
-                    <span
-                      className={`text-xs ${scenario.metrics.profitChange > 0 ? "text-green-600" : "text-red-600"}`}
-                    >
-                      {scenario.metrics.profitChange > 0 ? "+" : ""}
-                      {scenario.metrics.profitChange}%
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Confidence and Probability */}
-              <div className="space-compact">
-                <div className="space-compact">
-                  <div className="flex items-center justify-between">
-                    <span className="text-body font-medium">Confiança</span>
-                    <span className="text-body-small text-muted-foreground">{scenario.confidence}%</span>
-                  </div>
-                  <Progress value={scenario.confidence} className="h-2" />
-                </div>
-
-                <div className="space-compact">
-                  <div className="flex items-center justify-between">
-                    <span className="text-body font-medium">Probabilidade</span>
-                    <span className="text-body-small text-muted-foreground">{scenario.probability}%</span>
-                  </div>
-                  <Progress value={scenario.probability} className="h-2" />
-                </div>
-              </div>
-
-              {/* Author and Date */}
-              <div className="grid grid-cols-2 gap-4 pt-3 border-t border-border/50 text-caption">
-                <div>
-                  <p>Autor: {scenario.author}</p>
-                </div>
-                <div>
-                  <p>
-                    Atualizado:{" "}
-                    {new Date(scenario.lastUpdate).toLocaleDateString("pt-BR", {
-                      day: "2-digit",
-                      month: "2-digit",
-                    })}
-                  </p>
-                </div>
-              </div>
-
-              {/* Tags */}
-              <div className="flex flex-wrap gap-2">
-                {scenario.tags.slice(0, 3).map((tag) => (
-                  <Badge key={tag} variant="secondary" className="text-xs px-2 py-1">
-                    {tag}
-                  </Badge>
-                ))}
-                {scenario.tags.length > 3 && (
-                  <Badge variant="outline" className="text-xs px-2 py-1">
-                    +{scenario.tags.length - 3}
-                  </Badge>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {selectedScenario && (
-        <ScenarioDetailModal
-          scenario={selectedScenario}
-          open={!!selectedScenario}
-          onOpenChange={() => setSelectedScenario(null)}
-        />
-      )}
-    </>
+              ))}
+              {scenario.tags.length > 3 && (
+                <Badge variant="outline" className="text-xs px-2 py-0.5">
+                  +{scenario.tags.length - 3}
+                </Badge>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   )
 }
