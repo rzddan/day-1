@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { CompanyGrid } from "@/components/companies/company-grid"
 import { AddCompanyModal } from "@/components/companies/add-company-modal"

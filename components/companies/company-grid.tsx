@@ -52,6 +52,29 @@ interface CompanyGridProps {
   onSelect?: (id: string) => void
 }
 
+function toCamelCaseCompany(company: any): Company {
+  return {
+    id: company.id,
+    name: company.name,
+    logo: company.logo,
+    industry: company.industry,
+    status: company.status,
+    revenue: company.revenue,
+    revenueChange: company.revenue_change,
+    employees: company.employees,
+    projects: company.projects ?? 0,
+    completedProjects: company.completed_projects ?? 0,
+    healthScore: company.health_score ?? 0,
+    lastUpdate: company.last_update,
+    manager: company.manager,
+    priority: company.priority,
+    tags: Array.isArray(company.tags)
+      ? company.tags
+      : (typeof company.tags === 'string' ? JSON.parse(company.tags) : []),
+    nextReview: company.next_review,
+  }
+}
+
 export function CompanyGrid({ onSelect }: CompanyGridProps) {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
   const [companies, setCompanies] = useState<Company[]>([])
@@ -60,14 +83,7 @@ export function CompanyGrid({ onSelect }: CompanyGridProps) {
     supabase.from('companies').select('*').then(({ data, error }) => {
       console.log('Empresas do Supabase:', data, error);
       if (data) {
-        setCompanies(data.map((company: any) => ({
-          ...company,
-          revenueChange: company.revenue_change,
-          completedProjects: company.completed_projects,
-          healthScore: company.health_score,
-          lastUpdate: company.last_update,
-          nextReview: company.next_review,
-        })))
+        setCompanies(data.map(toCamelCaseCompany))
       }
     })
   }, [])
