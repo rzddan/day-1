@@ -1,6 +1,7 @@
+"use client"
+
 import { NotificationsList } from "@/components/notifications/notifications-list"
 import { NotificationsFilters } from "@/components/notifications/notifications-filters"
-import { Suspense } from "react"
 
 export default function NotificationsPage() {
   return (
@@ -14,9 +15,7 @@ export default function NotificationsPage() {
         </div>
       </div>
       <NotificationsFilters />
-      <Suspense fallback={<div className="text-center py-8 text-muted-foreground">Carregando notificações...</div>}>
-        <NotificationsList />
-      </Suspense>
+      <NotificationsList />
     </div>
   )
 }

@@ -1,6 +1,7 @@
+"use client"
+
 import { AchievementsList } from "@/components/achievements/achievements-list"
 import { AchievementsStats } from "@/components/achievements/achievements-stats"
-import { Suspense } from "react"
 
 export default function AchievementsPage() {
   return (
@@ -12,9 +13,7 @@ export default function AchievementsPage() {
         </div>
       </div>
       <AchievementsStats />
-      <Suspense fallback={<div className="text-center py-8 text-muted-foreground">Carregando conquistas...</div>}>
-        <AchievementsList />
-      </Suspense>
+      <AchievementsList />
     </div>
   )
 }

@@ -1,7 +1,8 @@
+"use client"
+
 import { ScenariosGrid } from "@/components/scenarios/scenarios-grid"
 import { ScenariosToolbar } from "@/components/scenarios/scenarios-toolbar"
 import { AddScenarioModal } from "@/components/scenarios/add-scenario-modal"
-import { Suspense } from "react"
 
 export default function ScenariosPage() {
   return (
@@ -16,9 +17,7 @@ export default function ScenariosPage() {
         <AddScenarioModal />
       </div>
       <ScenariosToolbar />
-      <Suspense fallback={<div className="text-center py-8 text-muted-foreground">Carregando cenários...</div>}>
-        <ScenariosGrid />
-      </Suspense>
+      <ScenariosGrid />
     </div>
   )
 }

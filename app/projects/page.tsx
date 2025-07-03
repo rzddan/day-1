@@ -1,7 +1,8 @@
+"use client"
+
 import { ProjectsGrid } from "@/components/projects/projects-grid"
 import { ProjectsFilters } from "@/components/projects/projects-filters"
 import { AddProjectModal } from "@/components/projects/add-project-modal"
-import { Suspense } from "react"
 
 export default function ProjectsPage() {
   return (
@@ -14,9 +15,7 @@ export default function ProjectsPage() {
         <AddProjectModal />
       </div>
       <ProjectsFilters />
-      <Suspense fallback={<div className="text-center py-8 text-muted-foreground">Carregando projetos...</div>}>
-        <ProjectsGrid />
-      </Suspense>
+      <ProjectsGrid />
     </div>
   )
 }

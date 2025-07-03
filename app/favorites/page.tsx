@@ -1,6 +1,7 @@
+"use client"
+
 import { FavoritesList } from "@/components/favorites/favorites-list"
 import { FavoritesFilters } from "@/components/favorites/favorites-filters"
-import { Suspense } from "react"
 
 export default function FavoritesPage() {
   return (
@@ -14,9 +15,7 @@ export default function FavoritesPage() {
         </div>
       </div>
       <FavoritesFilters />
-      <Suspense fallback={<div className="text-center py-8 text-muted-foreground">Carregando favoritos...</div>}>
-        <FavoritesList />
-      </Suspense>
+      <FavoritesList />
     </div>
   )
 }
