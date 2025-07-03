@@ -20,6 +20,8 @@ import {
   Search,
   HelpCircle,
   MoreHorizontal,
+  Sun,
+  Moon,
 } from "lucide-react"
 import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter, SidebarTrigger } from "@/components/ui/sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -30,6 +32,8 @@ import { useTheme } from "next-themes"
 import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { XPDetailModal } from "@/components/gamification/xp-detail-modal"
+import { useState } from "react"
 
 export function AppSidebar() {
   const pathname = usePathname()
@@ -40,35 +44,67 @@ export function AppSidebar() {
   // Função para navegação
   const goTo = (href: string) => router.push(href)
 
+  // Estado para modal de perfil/gamificação
+  const [showProfileModal, setShowProfileModal] = useState(false)
+
+  // Dados mockados do usuário
+  const user = {
+    name: "Day",
+    level: 8,
+    currentXP: 2450,
+    nextLevelXP: 3000,
+    avatar: "/placeholder-user.jpg",
+  }
+  const progressPercentage = (user.currentXP / user.nextLevelXP) * 100
+
   return (
     <Sidebar collapsible="icon" className={`border-r bg-background min-h-screen flex flex-col justify-between transition-all duration-300 ${state === "collapsed" ? "w-16" : "w-64"}`}>
       <SidebarHeader className="border-b flex flex-col items-center gap-2 px-3 py-6">
-        <Avatar className="h-14 w-14">
-          <AvatarImage src="/placeholder-user.jpg" alt="Usuário" />
-          <AvatarFallback>AC</AvatarFallback>
-        </Avatar>
-        {state !== "collapsed" && (
-          <>
-            <div className="text-center">
-              <div className="font-bold text-lg">shadcn</div>
-            </div>
-            {/* Gamificação */}
-            <div className="flex flex-col items-center mt-2">
-              <span className="text-xs text-muted-foreground">Nível 5</span>
-              <div className="w-20 h-2 bg-muted rounded-full overflow-hidden mt-1">
-                <div className="bg-primary h-2 rounded-full" style={{ width: "60%" }} />
+        {/* Bloco de perfil aprimorado */}
+        <button
+          className={`group flex flex-col items-center w-full focus:outline-none ${state === "collapsed" ? "py-2" : "py-0"}`}
+          onClick={() => setShowProfileModal(true)}
+          tabIndex={0}
+          aria-label="Abrir perfil/gamificação"
+        >
+          <Avatar className="h-14 w-14 shadow-lg ring-2 ring-primary/30">
+            <AvatarImage src={user.avatar} alt="Usuário" />
+            <AvatarFallback>DY</AvatarFallback>
+          </Avatar>
+          {state !== "collapsed" && (
+            <>
+              <div className="text-center mt-2">
+                <div className="font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{user.name}</div>
               </div>
-              <span className="text-xs text-muted-foreground mt-1">XP: 1200/2000</span>
-            </div>
-          </>
-        )}
-        <Button variant="ghost" size="icon" className="mt-2" onClick={toggleSidebar}>
+              <div className="flex flex-col items-center mt-1 w-full">
+                <span className="text-xs text-muted-foreground">Nível {user.level}</span>
+                <div className="w-24 h-2 bg-muted rounded-full overflow-hidden mt-1">
+                  <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300" style={{ width: `${progressPercentage}%` }} />
+                </div>
+                <span className="text-xs text-muted-foreground mt-1">XP: {user.currentXP}/{user.nextLevelXP}</span>
+              </div>
+            </>
+          )}
+        </button>
+        <Button variant="ghost" size="icon" className="mt-2" onClick={toggleSidebar} tabIndex={0} aria-label="Alternar sidebar">
           {state === "collapsed" ? <ChevronRight /> : <ChevronLeft />}
         </Button>
       </SidebarHeader>
       <SidebarContent className="flex-1 px-2 py-4">
         <TooltipProvider>
           <nav className="flex flex-col gap-1">
+            {/* Dashboard */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button asChild variant="ghost" className={`justify-start w-full ${pathname === "/" ? "bg-accent" : ""}`}>
+                  <Link href="/">
+                    <Home className="mr-2 h-5 w-5" />
+                    {state !== "collapsed" && "Dashboard"}
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              {state === "collapsed" && <TooltipContent>Dashboard</TooltipContent>}
+            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button asChild variant="ghost" className={`justify-start w-full ${pathname.startsWith("/companies") ? "bg-accent" : ""}`}>
@@ -165,6 +201,16 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter className="border-t flex flex-col items-center gap-2 py-4">
         <div className="flex flex-row gap-4 mb-2">
+          {/* Botão de alternância de tema */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label="Alternar tema" onClick={() => setTheme(theme === "dark" ? "light" : "dark") }>
+                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Alternar tema</TooltipContent>
+          </Tooltip>
+          {/* Configurações, Ajuda, Mais */}
           <Tooltip>
             <TooltipTrigger asChild>
               <Button asChild variant="ghost" size="icon" title="Configurações">
@@ -191,6 +237,8 @@ export function AppSidebar() {
           </Tooltip>
         </div>
       </SidebarFooter>
+      {/* Modal de perfil/gamificação */}
+      <XPDetailModal open={showProfileModal} onOpenChange={setShowProfileModal} />
     </Sidebar>
   )
 }

@@ -17,41 +17,39 @@ import {
 import { cn } from "@/lib/utils"
 
 const Drawer = ({
-  shouldScaleBackground = true,
   ...props
-}: React.ComponentProps<typeof Sheet.Root>) => (
-  <Sheet.Root
-    shouldScaleBackground={shouldScaleBackground}
+}: React.ComponentProps<typeof Sheet>) => (
+  <Sheet
     {...props}
   />
 )
 Drawer.displayName = "Drawer"
 
-const DrawerTrigger = Sheet.Trigger
+const DrawerTrigger = SheetTrigger
 
-const DrawerPortal = Sheet.Portal
+const DrawerPortal = SheetPortal
 
-const DrawerClose = Sheet.Close
+const DrawerClose = SheetClose
 
 const DrawerOverlay = React.forwardRef<
-  React.ElementRef<typeof Sheet.Overlay>,
-  React.ComponentPropsWithoutRef<typeof Sheet.Overlay>
+  React.ElementRef<typeof SheetOverlay>,
+  React.ComponentPropsWithoutRef<typeof SheetOverlay>
 >(({ className, ...props }, ref) => (
-  <Sheet.Overlay
+  <SheetOverlay
     ref={ref}
     className={cn("fixed inset-0 z-50 bg-black/80", className)}
     {...props}
   />
 ))
-DrawerOverlay.displayName = Sheet.Overlay.displayName
+DrawerOverlay.displayName = SheetOverlay.displayName
 
 const DrawerContent = React.forwardRef<
-  React.ElementRef<typeof Sheet.Content>,
-  React.ComponentPropsWithoutRef<typeof Sheet.Content>
+  React.ElementRef<typeof SheetContent>,
+  React.ComponentPropsWithoutRef<typeof SheetContent>
 >(({ className, children, ...props }, ref) => (
   <DrawerPortal>
     <DrawerOverlay />
-    <Sheet.Content
+    <SheetContent
       ref={ref}
       className={cn(
         "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] border bg-background",
@@ -61,7 +59,7 @@ const DrawerContent = React.forwardRef<
     >
       <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted" />
       {children}
-    </Sheet.Content>
+    </SheetContent>
   </DrawerPortal>
 ))
 DrawerContent.displayName = "DrawerContent"
@@ -89,10 +87,10 @@ const DrawerFooter = ({
 DrawerFooter.displayName = "DrawerFooter"
 
 const DrawerTitle = React.forwardRef<
-  React.ElementRef<typeof Sheet.Title>,
-  React.ComponentPropsWithoutRef<typeof Sheet.Title>
+  React.ElementRef<typeof SheetTitle>,
+  React.ComponentPropsWithoutRef<typeof SheetTitle>
 >(({ className, ...props }, ref) => (
-  <Sheet.Title
+  <SheetTitle
     ref={ref}
     className={cn(
       "text-lg font-semibold leading-none tracking-tight",
@@ -101,29 +99,29 @@ const DrawerTitle = React.forwardRef<
     {...props}
   />
 ))
-DrawerTitle.displayName = Sheet.Title.displayName
+DrawerTitle.displayName = SheetTitle.displayName
 
 const DrawerDescription = React.forwardRef<
-  React.ElementRef<typeof Sheet.Description>,
-  React.ComponentPropsWithoutRef<typeof Sheet.Description>
+  React.ElementRef<typeof SheetDescription>,
+  React.ComponentPropsWithoutRef<typeof SheetDescription>
 >(({ className, ...props }, ref) => (
-  <Sheet.Description
+  <SheetDescription
     ref={ref}
     className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
 ))
-DrawerDescription.displayName = Sheet.Description.displayName
+DrawerDescription.displayName = SheetDescription.displayName
 
 export {
-  Sheet as Drawer,
-  SheetPortal as DrawerPortal,
-  SheetOverlay as DrawerOverlay,
-  SheetTrigger as DrawerTrigger,
-  SheetClose as DrawerClose,
-  SheetContent as DrawerContent,
-  SheetHeader as DrawerHeader,
-  SheetFooter as DrawerFooter,
-  SheetTitle as DrawerTitle,
-  SheetDescription as DrawerDescription,
+  Drawer,
+  DrawerPortal,
+  DrawerOverlay,
+  DrawerTrigger,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+  DrawerFooter,
+  DrawerTitle,
+  DrawerDescription,
 }
