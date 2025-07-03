@@ -1,46 +1,57 @@
 "use client"
 
 import * as React from "react"
-import { Drawer as DrawerPrimitive } from "vaul"
+import {
+  Sheet,
+  SheetPortal,
+  SheetOverlay,
+  SheetTrigger,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet"
 
 import { cn } from "@/lib/utils"
 
 const Drawer = ({
   shouldScaleBackground = true,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
-  <DrawerPrimitive.Root
+}: React.ComponentProps<typeof Sheet.Root>) => (
+  <Sheet.Root
     shouldScaleBackground={shouldScaleBackground}
     {...props}
   />
 )
 Drawer.displayName = "Drawer"
 
-const DrawerTrigger = DrawerPrimitive.Trigger
+const DrawerTrigger = Sheet.Trigger
 
-const DrawerPortal = DrawerPrimitive.Portal
+const DrawerPortal = Sheet.Portal
 
-const DrawerClose = DrawerPrimitive.Close
+const DrawerClose = Sheet.Close
 
 const DrawerOverlay = React.forwardRef<
-  React.ElementRef<typeof DrawerPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay>
+  React.ElementRef<typeof Sheet.Overlay>,
+  React.ComponentPropsWithoutRef<typeof Sheet.Overlay>
 >(({ className, ...props }, ref) => (
-  <DrawerPrimitive.Overlay
+  <Sheet.Overlay
     ref={ref}
     className={cn("fixed inset-0 z-50 bg-black/80", className)}
     {...props}
   />
 ))
-DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName
+DrawerOverlay.displayName = Sheet.Overlay.displayName
 
 const DrawerContent = React.forwardRef<
-  React.ElementRef<typeof DrawerPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>
+  React.ElementRef<typeof Sheet.Content>,
+  React.ComponentPropsWithoutRef<typeof Sheet.Content>
 >(({ className, children, ...props }, ref) => (
   <DrawerPortal>
     <DrawerOverlay />
-    <DrawerPrimitive.Content
+    <Sheet.Content
       ref={ref}
       className={cn(
         "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] border bg-background",
@@ -50,7 +61,7 @@ const DrawerContent = React.forwardRef<
     >
       <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted" />
       {children}
-    </DrawerPrimitive.Content>
+    </Sheet.Content>
   </DrawerPortal>
 ))
 DrawerContent.displayName = "DrawerContent"
@@ -78,10 +89,10 @@ const DrawerFooter = ({
 DrawerFooter.displayName = "DrawerFooter"
 
 const DrawerTitle = React.forwardRef<
-  React.ElementRef<typeof DrawerPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Title>
+  React.ElementRef<typeof Sheet.Title>,
+  React.ComponentPropsWithoutRef<typeof Sheet.Title>
 >(({ className, ...props }, ref) => (
-  <DrawerPrimitive.Title
+  <Sheet.Title
     ref={ref}
     className={cn(
       "text-lg font-semibold leading-none tracking-tight",
@@ -90,29 +101,29 @@ const DrawerTitle = React.forwardRef<
     {...props}
   />
 ))
-DrawerTitle.displayName = DrawerPrimitive.Title.displayName
+DrawerTitle.displayName = Sheet.Title.displayName
 
 const DrawerDescription = React.forwardRef<
-  React.ElementRef<typeof DrawerPrimitive.Description>,
-  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Description>
+  React.ElementRef<typeof Sheet.Description>,
+  React.ComponentPropsWithoutRef<typeof Sheet.Description>
 >(({ className, ...props }, ref) => (
-  <DrawerPrimitive.Description
+  <Sheet.Description
     ref={ref}
     className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
 ))
-DrawerDescription.displayName = DrawerPrimitive.Description.displayName
+DrawerDescription.displayName = Sheet.Description.displayName
 
 export {
-  Drawer,
-  DrawerPortal,
-  DrawerOverlay,
-  DrawerTrigger,
-  DrawerClose,
-  DrawerContent,
-  DrawerHeader,
-  DrawerFooter,
-  DrawerTitle,
-  DrawerDescription,
+  Sheet as Drawer,
+  SheetPortal as DrawerPortal,
+  SheetOverlay as DrawerOverlay,
+  SheetTrigger as DrawerTrigger,
+  SheetClose as DrawerClose,
+  SheetContent as DrawerContent,
+  SheetHeader as DrawerHeader,
+  SheetFooter as DrawerFooter,
+  SheetTitle as DrawerTitle,
+  SheetDescription as DrawerDescription,
 }

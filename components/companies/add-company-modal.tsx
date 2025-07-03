@@ -19,6 +19,16 @@ import {
 } from "@/components/ui/dialog"
 import { Plus } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { z } from "zod"
+
+const companySchema = z.object({
+  name: z.string().min(3, "Nome muito curto").max(64, "Nome muito longo"),
+  industry: z.string().optional(),
+  description: z.string().optional(),
+  initialCash: z.string().optional(),
+  initialDebt: z.string().optional(),
+  status: z.string().optional(),
+})
 
 export function AddCompanyModal() {
   const [open, setOpen] = useState(false)
@@ -34,8 +44,16 @@ export function AddCompanyModal() {
     status: "active",
   })
 
+  const [formError, setFormError] = useState<string | null>(null)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setFormError(null)
+    const result = companySchema.safeParse(formData)
+    if (!result.success) {
+      setFormError(result.error.errors[0].message)
+      return
+    }
     setIsLoading(true)
 
     // Simular salvamento
@@ -157,6 +175,8 @@ export function AddCompanyModal() {
               </Select>
             </div>
           </div>
+
+          {formError && <div className="text-red-500 text-sm">{formError}</div>}
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>

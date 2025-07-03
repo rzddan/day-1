@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { Header } from "@/components/layout/header"
 import { MobileDock } from "@/components/layout/mobile-dock"
 import { XPProgress } from "@/components/gamification/xp-progress"
 import { ProjectSelector } from "@/components/dashboard/project-selector"
@@ -23,8 +22,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-
       <main className="pb-20 md:pb-6">
         <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-6">
           {/* Header Section */}
@@ -45,7 +42,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Project Selector */}
-          <ProjectSelector onSelectionChange={handleSelectionChange} />
+          <ProjectSelector />
 
           {/* Overview Cards */}
           <DashboardOverview companyId={selectedCompany} projectId={selectedProject} />

@@ -118,7 +118,11 @@ const mockCompanies: Company[] = [
   },
 ]
 
-export function CompanyGrid() {
+interface CompanyGridProps {
+  onSelect?: (id: string) => void
+}
+
+export function CompanyGrid({ onSelect }: CompanyGridProps) {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
 
   const getStatusColor = (status: string) => {
@@ -162,7 +166,7 @@ export function CompanyGrid() {
           <Card
             key={company.id}
             className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary"
-            onClick={() => setSelectedCompany(company)}
+            onClick={() => onSelect ? onSelect(company.id.toString()) : setSelectedCompany(company)}
           >
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">

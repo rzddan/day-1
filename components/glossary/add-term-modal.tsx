@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog"
 import { Plus } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { z } from "zod"
 
 const categories = [
   "Análise Financeira",
@@ -29,6 +30,14 @@ const categories = [
   "Mercado de Capitais",
   "Planejamento Financeiro",
 ]
+
+const termSchema = z.object({
+  term: z.string().min(2, "Termo muito curto").max(32, "Termo muito longo"),
+  category: z.string().optional(),
+  definition: z.string().min(5, "Definição muito curta").max(512, "Definição muito longa"),
+  examples: z.string().optional(),
+  relatedTerms: z.string().optional(),
+})
 
 export function AddTermModal() {
   const [open, setOpen] = useState(false)
@@ -43,8 +52,16 @@ export function AddTermModal() {
     relatedTerms: "",
   })
 
+  const [formError, setFormError] = useState<string | null>(null)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setFormError(null)
+    const result = termSchema.safeParse(formData)
+    if (!result.success) {
+      setFormError(result.error.errors[0].message)
+      return
+    }
     setIsLoading(true)
 
     // Simular salvamento
@@ -142,6 +159,8 @@ export function AddTermModal() {
               placeholder="Ex: ROI, ROE, ROIC (separados por vírgula)"
             />
           </div>
+
+          {formError && <div className="text-red-500 text-sm">{formError}</div>}
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>

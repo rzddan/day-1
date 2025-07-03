@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useContext } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Building2, FolderKanban, ChevronDown } from "lucide-react"
+import { useProjectContext } from "@/context/ProjectContext"
 
 interface Company {
   id: string
@@ -15,10 +16,6 @@ interface Project {
   id: string
   name: string
   status: "healthy" | "warning" | "danger"
-}
-
-interface ProjectSelectorProps {
-  onSelectionChange: (companyId: string | null, projectId: string | null) => void
 }
 
 const companies: Company[] = [
@@ -51,24 +48,16 @@ const companies: Company[] = [
   },
 ]
 
-export function ProjectSelector({ onSelectionChange }: ProjectSelectorProps) {
-  const [selectedCompany, setSelectedCompany] = useState<string>("")
-  const [selectedProject, setSelectedProject] = useState<string>("")
+export function ProjectSelector() {
+  const { selectedCompany, setSelectedCompany, selectedProject, setSelectedProject, companies } = useProjectContext()
 
   const handleCompanyChange = (companyId: string) => {
     setSelectedCompany(companyId)
     setSelectedProject("")
-
-    if (companyId === "all") {
-      onSelectionChange(null, null)
-    } else {
-      onSelectionChange(companyId, null)
-    }
   }
 
   const handleProjectChange = (projectId: string) => {
     setSelectedProject(projectId)
-    onSelectionChange(selectedCompany, projectId)
   }
 
   const getStatusColor = (status: string) => {
@@ -84,19 +73,17 @@ export function ProjectSelector({ onSelectionChange }: ProjectSelectorProps) {
     }
   }
 
-  const selectedCompanyData = companies.find((c) => c.id === selectedCompany)
+  const selectedCompanyData = companies.find((c: any) => c.id === selectedCompany)
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div className="w-full">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 w-full">
         {/* Company Selector */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-            <Building2 className="h-4 w-4" />
-            Empresa
-          </label>
+        <div className="flex-1 flex items-center gap-2 mb-2 sm:mb-0">
+          <Building2 className="h-5 w-5 text-muted-foreground" />
+          <span className="text-sm font-medium text-muted-foreground min-w-[60px]">Empresa</span>
           <Select value={selectedCompany} onValueChange={handleCompanyChange}>
-            <SelectTrigger className="h-11">
+            <SelectTrigger className="h-11 min-w-[200px]">
               <SelectValue placeholder="Selecione uma empresa" />
             </SelectTrigger>
             <SelectContent>
@@ -104,11 +91,11 @@ export function ProjectSelector({ onSelectionChange }: ProjectSelectorProps) {
                 <div className="flex items-center justify-between w-full">
                   <span>Todas as Empresas</span>
                   <Badge variant="secondary" className="ml-2">
-                    {companies.reduce((acc, c) => acc + c.projects.length, 0)} projetos
+                    {companies.reduce((acc: number, c: any) => acc + c.projects.length, 0)} projetos
                   </Badge>
                 </div>
               </SelectItem>
-              {companies.map((company) => (
+              {companies.map((company: any) => (
                 <SelectItem key={company.id} value={company.id}>
                   <div className="flex items-center justify-between w-full">
                     <span>{company.name}</span>
@@ -123,17 +110,15 @@ export function ProjectSelector({ onSelectionChange }: ProjectSelectorProps) {
         </div>
 
         {/* Project Selector */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-            <FolderKanban className="h-4 w-4" />
-            Projeto
-          </label>
+        <div className="flex-1 flex items-center gap-2 mt-2 sm:mt-0">
+          <FolderKanban className="h-5 w-5 text-muted-foreground" />
+          <span className="text-sm font-medium text-muted-foreground min-w-[60px]">Projeto</span>
           <Select
             value={selectedProject}
             onValueChange={handleProjectChange}
             disabled={!selectedCompany || selectedCompany === "all"}
           >
-            <SelectTrigger className="h-11">
+            <SelectTrigger className="h-11 min-w-[220px]">
               <SelectValue
                 placeholder={
                   !selectedCompany || selectedCompany === "all"
@@ -160,7 +145,7 @@ export function ProjectSelector({ onSelectionChange }: ProjectSelectorProps) {
 
       {/* Selected Info */}
       {(selectedCompany || selectedProject) && (
-        <div className="flex flex-wrap items-center gap-2 p-3 bg-muted/50 rounded-lg">
+        <div className="flex flex-wrap items-center gap-2 p-3 bg-muted/50 rounded-lg mt-3">
           <span className="text-sm text-muted-foreground">Visualizando:</span>
           {selectedProject ? (
             <>
