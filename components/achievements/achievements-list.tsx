@@ -1,91 +1,28 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Trophy, Star, BookOpen, TrendingUp, Calendar, Users, Shield, Award } from "lucide-react"
 import { AchievementDetailModal } from "./achievement-detail-modal"
-
-const achievements = [
-  {
-    id: 1,
-    title: "Primeiro Login",
-    description: "Bem-vindo ao Painel CFO! Você fez seu primeiro acesso.",
-    icon: Shield,
-    category: "Início",
-    xp: 50,
-    unlocked: true,
-    unlockedAt: "2024-01-10T08:00:00",
-    rarity: "common",
-  },
-  {
-    id: 2,
-    title: "Analista Dedicado",
-    description: "Complete 7 dias consecutivos de uso da plataforma.",
-    icon: Calendar,
-    category: "Consistência",
-    xp: 200,
-    unlocked: true,
-    unlockedAt: "2024-01-15T18:30:00",
-    rarity: "uncommon",
-  },
-  {
-    id: 3,
-    title: "Mestre dos Cenários",
-    description: "Crie e compare 5 cenários financeiros diferentes.",
-    icon: TrendingUp,
-    category: "Análise",
-    xp: 300,
-    unlocked: true,
-    unlockedAt: "2024-01-12T14:20:00",
-    rarity: "rare",
-    progress: 100,
-  },
-  {
-    id: 4,
-    title: "Estudante Aplicado",
-    description: "Complete 3 módulos de aprendizado.",
-    icon: BookOpen,
-    category: "Educação",
-    xp: 150,
-    unlocked: false,
-    progress: 67,
-    current: 2,
-    target: 3,
-    rarity: "common",
-  },
-  {
-    id: 5,
-    title: "Organizador Expert",
-    description: "Gerencie 10 projetos simultaneamente.",
-    icon: Users,
-    category: "Gestão",
-    xp: 400,
-    unlocked: false,
-    progress: 40,
-    current: 4,
-    target: 10,
-    rarity: "epic",
-  },
-  {
-    id: 6,
-    title: "Glossário Completo",
-    description: "Adicione 50 termos ao glossário financeiro.",
-    icon: Award,
-    category: "Conhecimento",
-    xp: 250,
-    unlocked: false,
-    progress: 12,
-    current: 6,
-    target: 50,
-    rarity: "uncommon",
-  },
-]
+import { supabase } from "@/lib/supabaseClient"
 
 export function AchievementsList() {
   const [selectedAchievement, setSelectedAchievement] = useState<any>(null)
   const [modalOpen, setModalOpen] = useState(false)
+  const [achievements, setAchievements] = useState<any[]>([])
+
+  useEffect(() => {
+    supabase.from('achievements').select('*').then(({ data, error }) => {
+      if (data) {
+        setAchievements(data.map((achievement: any) => ({
+          ...achievement,
+          unlockedAt: achievement.unlocked_at,
+        })))
+      }
+    })
+  }, [])
 
   const handleAchievementClick = (achievement: any) => {
     setSelectedAchievement(achievement)

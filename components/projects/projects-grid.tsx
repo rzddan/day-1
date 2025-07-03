@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -26,120 +26,42 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { supabase } from "@/lib/supabaseClient"
 
 interface Project {
   id: number
   name: string
   description: string
-  company: string
-  status: "active" | "completed" | "paused" | "planning"
-  priority: "high" | "medium" | "low"
+  company_id: number
+  status: string
+  priority: string
   progress: number
   startDate: string
   endDate: string
   budget: number
   spent: number
-  team: Array<{
-    name: string
-    avatar?: string
-    role: string
-  }>
-  tasks: {
-    total: number
-    completed: number
-    inProgress: number
-    pending: number
-  }
-  tags: string[]
   manager: string
   lastUpdate: string
+  tags: string[]
 }
-
-const mockProjects: Project[] = [
-  {
-    id: 1,
-    name: "Implementação ERP",
-    description: "Sistema integrado de gestão empresarial para otimização de processos",
-    company: "TechCorp Solutions",
-    status: "active",
-    priority: "high",
-    progress: 65,
-    startDate: "2024-01-01",
-    endDate: "2024-06-30",
-    budget: 150000,
-    spent: 97500,
-    team: [
-      { name: "Ana Silva", role: "PM" },
-      { name: "Carlos Santos", role: "Dev" },
-      { name: "Maria Costa", role: "QA" },
-    ],
-    tasks: {
-      total: 45,
-      completed: 29,
-      inProgress: 8,
-      pending: 8,
-    },
-    tags: ["ERP", "Integração", "Crítico"],
-    manager: "Ana Silva",
-    lastUpdate: "2024-01-15",
-  },
-  {
-    id: 2,
-    name: "Auditoria Financeira Q1",
-    description: "Revisão completa dos processos financeiros e compliance",
-    company: "Indústria Verde Ltda",
-    status: "active",
-    priority: "medium",
-    progress: 30,
-    startDate: "2024-01-10",
-    endDate: "2024-03-31",
-    budget: 75000,
-    spent: 22500,
-    team: [
-      { name: "João Oliveira", role: "Auditor" },
-      { name: "Patricia Lima", role: "Analista" },
-    ],
-    tasks: {
-      total: 28,
-      completed: 8,
-      inProgress: 6,
-      pending: 14,
-    },
-    tags: ["Auditoria", "Compliance", "Financeiro"],
-    manager: "João Oliveira",
-    lastUpdate: "2024-01-14",
-  },
-  {
-    id: 3,
-    name: "Plataforma E-commerce",
-    description: "Desenvolvimento de nova plataforma de vendas online",
-    company: "Comércio Digital",
-    status: "planning",
-    priority: "high",
-    progress: 15,
-    startDate: "2024-02-01",
-    endDate: "2024-08-31",
-    budget: 200000,
-    spent: 30000,
-    team: [
-      { name: "Roberto Silva", role: "Tech Lead" },
-      { name: "Fernanda Costa", role: "UX/UI" },
-      { name: "Lucas Santos", role: "Backend" },
-    ],
-    tasks: {
-      total: 67,
-      completed: 10,
-      inProgress: 12,
-      pending: 45,
-    },
-    tags: ["E-commerce", "Frontend", "Backend"],
-    manager: "Roberto Silva",
-    lastUpdate: "2024-01-12",
-  },
-]
 
 export function ProjectsGrid() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [projects, setProjects] = useState<Project[]>([])
+
+  useEffect(() => {
+    supabase.from('projects').select('*').then(({ data, error }) => {
+      if (data) {
+        setProjects(data.map((project: any) => ({
+          ...project,
+          companyId: project.company_id,
+          startDate: project.start_date,
+          endDate: project.end_date,
+          lastUpdate: project.last_update,
+        })))
+      }
+    })
+  }, [])
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -202,7 +124,7 @@ export function ProjectsGrid() {
 
   return (
     <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-      {mockProjects.map((project) => (
+      {projects.map((project) => (
         <Card
           key={project.id}
           className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary"
@@ -256,7 +178,7 @@ export function ProjectsGrid() {
               </div>
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Building2 className="h-3 w-3" />
-                <span className="truncate max-w-24">{project.company}</span>
+                <span className="truncate max-w-24">{project.companyId}</span>
               </div>
             </div>
 

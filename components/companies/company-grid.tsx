@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -27,13 +27,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { CompanyDetailModal } from "./company-detail-modal"
+import { supabase } from "@/lib/supabaseClient"
 
 interface Company {
   id: number
   name: string
   logo?: string
   industry: string
-  status: "active" | "inactive" | "pending"
+  status: string
   revenue: number
   revenueChange: number
   employees: number
@@ -42,81 +43,10 @@ interface Company {
   healthScore: number
   lastUpdate: string
   manager: string
-  priority: "high" | "medium" | "low"
+  priority: string
   tags: string[]
   nextReview: string
 }
-
-const mockCompanies: Company[] = [
-  {
-    id: 1,
-    name: "TechCorp Solutions",
-    industry: "Tecnologia",
-    status: "active",
-    revenue: 2500000,
-    revenueChange: 12.5,
-    employees: 45,
-    projects: 8,
-    completedProjects: 6,
-    healthScore: 85,
-    lastUpdate: "2024-01-15",
-    manager: "Ana Silva",
-    priority: "high",
-    tags: ["SaaS", "B2B", "Crescimento"],
-    nextReview: "2024-02-01",
-  },
-  {
-    id: 2,
-    name: "Indústria Verde Ltda",
-    industry: "Sustentabilidade",
-    status: "active",
-    revenue: 1800000,
-    revenueChange: -3.2,
-    employees: 32,
-    projects: 5,
-    completedProjects: 4,
-    healthScore: 72,
-    lastUpdate: "2024-01-12",
-    manager: "Carlos Santos",
-    priority: "medium",
-    tags: ["ESG", "Manufatura", "Sustentável"],
-    nextReview: "2024-01-25",
-  },
-  {
-    id: 3,
-    name: "StartupX",
-    industry: "Fintech",
-    status: "pending",
-    revenue: 450000,
-    revenueChange: 45.8,
-    employees: 12,
-    projects: 3,
-    completedProjects: 1,
-    healthScore: 68,
-    lastUpdate: "2024-01-10",
-    manager: "Maria Costa",
-    priority: "high",
-    tags: ["Startup", "Fintech", "Inovação"],
-    nextReview: "2024-01-20",
-  },
-  {
-    id: 4,
-    name: "Comércio Digital",
-    industry: "E-commerce",
-    status: "active",
-    revenue: 3200000,
-    revenueChange: 8.7,
-    employees: 67,
-    projects: 12,
-    completedProjects: 9,
-    healthScore: 91,
-    lastUpdate: "2024-01-14",
-    manager: "João Oliveira",
-    priority: "medium",
-    tags: ["E-commerce", "Varejo", "Digital"],
-    nextReview: "2024-02-05",
-  },
-]
 
 interface CompanyGridProps {
   onSelect?: (id: string) => void
@@ -124,6 +54,23 @@ interface CompanyGridProps {
 
 export function CompanyGrid({ onSelect }: CompanyGridProps) {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
+  const [companies, setCompanies] = useState<Company[]>([])
+
+  useEffect(() => {
+    supabase.from('companies').select('*').then(({ data, error }) => {
+      console.log('Empresas do Supabase:', data, error);
+      if (data) {
+        setCompanies(data.map((company: any) => ({
+          ...company,
+          revenueChange: company.revenue_change,
+          completedProjects: company.completed_projects,
+          healthScore: company.health_score,
+          lastUpdate: company.last_update,
+          nextReview: company.next_review,
+        })))
+      }
+    })
+  }, [])
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -161,8 +108,9 @@ export function CompanyGrid({ onSelect }: CompanyGridProps) {
 
   return (
     <>
+      {companies.length === 0 && <div style={{padding: 32}}>Nenhuma empresa encontrada ou erro na consulta.</div>}
       <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-        {mockCompanies.map((company) => (
+        {companies.map((company) => (
           <Card
             key={company.id}
             className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary"
