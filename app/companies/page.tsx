@@ -1,6 +1,7 @@
+"use client"
+
 import { CompanyGrid } from "@/components/companies/company-grid"
 import { AddCompanyModal } from "@/components/companies/add-company-modal"
-import { Suspense } from "react"
 import { useRouter } from "next/navigation"
 
 export default function CompaniesPage() {
@@ -16,9 +17,7 @@ export default function CompaniesPage() {
         </div>
         <AddCompanyModal />
       </div>
-      <Suspense fallback={<div className="text-center py-8 text-muted-foreground">Carregando empresas...</div>}>
-        <CompanyGrid onSelect={handleSelect} />
-      </Suspense>
+      <CompanyGrid onSelect={handleSelect} />
     </div>
   )
 }
