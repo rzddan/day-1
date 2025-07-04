@@ -19,14 +19,8 @@ import {
 } from "@/components/ui/dialog"
 import { Plus, BarChart3, TrendingDown, AlertTriangle } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { z } from "zod"
 
 const companies = ["TechCorp Inc.", "Manufacturing Ltd.", "StartupCo", "Consulting Group"]
-
-const scenarioSchema = z.object({
-  name: z.string().min(3, "Nome muito curto").max(64, "Nome muito longo"),
-  type: z.enum(["Base", "Stress", "Pessimista"]),
-})
 
 export function AddScenarioModal() {
   const [open, setOpen] = useState(false)
@@ -44,16 +38,8 @@ export function AddScenarioModal() {
     assumptions: "",
   })
 
-  const [formError, setFormError] = useState<string | null>(null)
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setFormError(null)
-    const result = scenarioSchema.safeParse(formData)
-    if (!result.success) {
-      setFormError(result.error.errors[0].message)
-      return
-    }
     setIsLoading(true)
 
     // Simular salvamento
@@ -221,8 +207,6 @@ export function AddScenarioModal() {
               rows={3}
             />
           </div>
-
-          {formError && <div className="text-red-500 text-sm">{formError}</div>}
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>

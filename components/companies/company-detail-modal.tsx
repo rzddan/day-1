@@ -29,7 +29,7 @@ interface Company {
   name: string
   logo?: string
   industry: string
-  status: string
+  status: "active" | "inactive" | "pending"
   revenue: number
   revenueChange: number
   employees: number
@@ -38,7 +38,7 @@ interface Company {
   healthScore: number
   lastUpdate: string
   manager: string
-  priority: string
+  priority: "high" | "medium" | "low"
   tags: string[]
   nextReview: string
 }

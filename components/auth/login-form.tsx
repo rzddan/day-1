@@ -11,7 +11,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Eye, EyeOff, Lock, User, AlertCircle, Shield } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { z } from "zod"
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -31,21 +30,10 @@ export function LoginForm() {
     password: "FinanceHub2024!",
   }
 
-  const loginSchema = z.object({
-    username: z.string().min(3, "Usuário muito curto").max(32, "Usuário muito longo"),
-    password: z.string().min(8, "Senha muito curta"),
-    rememberMe: z.boolean(),
-  })
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
-    const result = loginSchema.safeParse(credentials)
-    if (!result.success) {
-      setError(result.error.errors[0].message)
-      return
-    }
     setIsLoading(true)
+    setError("")
 
     // Simular delay de autenticação
     await new Promise((resolve) => setTimeout(resolve, 1500))

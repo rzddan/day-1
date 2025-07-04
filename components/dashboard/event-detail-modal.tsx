@@ -138,6 +138,9 @@ export function EventDetailModal({ event, isOpen, onClose }: EventDetailModalPro
               </div>
             </div>
           </div>
+          <Button variant="ghost" size="icon" className="absolute right-4 top-4 h-8 w-8" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
         </DialogHeader>
 
         {/* Content */}

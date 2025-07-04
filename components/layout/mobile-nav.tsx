@@ -23,7 +23,6 @@ import {
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { UserInfo } from "./UserInfo"
 
 const navigationSections = [
   {
@@ -112,7 +111,15 @@ export function MobileNav() {
 
           {/* Footer */}
           <div className="border-t p-4">
-            <UserInfo />
+            <div className="flex items-center gap-3 rounded-lg p-3 bg-muted/50">
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="text-sm font-medium">CF</span>
+              </div>
+              <div>
+                <p className="font-medium">Usuário CFO</p>
+                <p className="text-sm text-muted-foreground">Nível 8 • 2.450 XP</p>
+              </div>
+            </div>
           </div>
         </div>
       </SheetContent>

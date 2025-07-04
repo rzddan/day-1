@@ -20,25 +20,13 @@ import {
 } from "@/components/ui/dialog"
 import { Plus, Calendar } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { z } from "zod"
 
 const companies = ["TechCorp Inc.", "Manufacturing Ltd.", "StartupCo", "Consulting Group", "Todas as Empresas"]
-
-const projectSchema = z.object({
-  title: z.string().min(3, "Título muito curto").max(64, "Título muito longo"),
-  description: z.string().optional(),
-  companies: z.array(z.string()).min(1, "Selecione ao menos uma empresa"),
-  priority: z.enum(["low", "medium", "high"]),
-  dueDate: z.string().optional(),
-  budget: z.string().optional(),
-  status: z.string().optional(),
-})
 
 export function AddProjectModal() {
   const [open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
-  const [formError, setFormError] = useState<string | null>(null)
 
   const [formData, setFormData] = useState({
     title: "",
@@ -60,12 +48,6 @@ export function AddProjectModal() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setFormError(null)
-    const result = projectSchema.safeParse(formData)
-    if (!result.success) {
-      setFormError(result.error.errors[0].message)
-      return
-    }
     setIsLoading(true)
 
     // Simular salvamento
@@ -203,8 +185,6 @@ export function AddProjectModal() {
               />
             </div>
           </div>
-
-          {formError && <div className="text-red-500 text-sm">{formError}</div>}
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>

@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/dialog"
 import { Plus, Calendar, User } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { z } from "zod"
 
 const companies = ["TechCorp Inc.", "Manufacturing Ltd.", "StartupCo", "Consulting Group", "Todas"]
 
@@ -32,13 +31,6 @@ const projects = [
 ]
 
 const assignees = ["Ana Silva", "Carlos Santos", "Maria Costa", "João Oliveira", "Lucia Ferreira", "Roberto Alves"]
-
-const taskSchema = z.object({
-  title: z.string().min(3, "Título muito curto").max(64, "Título muito longo"),
-  description: z.string().optional(),
-  dueDate: z.string().optional(),
-  status: z.enum(["todo", "progress", "review"]).optional(),
-})
 
 export function AddTaskModal() {
   const [open, setOpen] = useState(false)
@@ -56,16 +48,8 @@ export function AddTaskModal() {
     status: "todo",
   })
 
-  const [formError, setFormError] = useState<string | null>(null)
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setFormError(null)
-    const result = taskSchema.safeParse(formData)
-    if (!result.success) {
-      setFormError(result.error.errors[0].message)
-      return
-    }
     setIsLoading(true)
 
     // Simular salvamento
@@ -231,8 +215,6 @@ export function AddTaskModal() {
               </Select>
             </div>
           </div>
-
-          {formError && <div className="text-red-500 text-sm">{formError}</div>}
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
